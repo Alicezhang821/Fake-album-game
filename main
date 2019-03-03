@@ -1,0 +1,56 @@
+def display_cover(top,bottom ):
+    import requests
+    
+    name='album_art_raw.png'
+    album_art_raw = requests.get('https://picsum.photos/500/500/?random')
+    with open(name,'wb') as album_art_raw_file:
+    album_art_raw_file.write(album_art_raw.content)
+    img = Image.open("album_art_raw.png")
+    draw = ImageDraw.Draw(img)
+
+    band_name_font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 20) #20pt font
+    album_name_font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 18) # 18pt font
+    
+    band_x, band_y = 50, 50
+    album_x, album_y = 50, 400
+
+    outline_color ="black"
+
+    draw.text((band_x-1, band_y-1), top, font=band_name_font, fill=outline_color)
+    draw.text((band_x+1, band_y-1), top, font=band_name_font, fill=outline_color)
+    draw.text((band_x-1, band_y+1), top, font=band_name_font, fill=outline_color)
+    draw.text((band_x+1, band_y+1), top, font=band_name_font, fill=outline_color)
+
+    draw.text((album_x-1, album_y-1), bottom , font=album_name_font, fill=outline_color)
+    draw.text((album_x+1, album_y-1), bottom , font=album_name_font, fill=outline_color)
+    draw.text((album_x-1, album_y+1), bottom , font=album_name_font, fill=outline_color)
+    draw.text((album_x+1, album_y+1), bottom , font=album_name_font, fill=outline_color)
+
+    draw.text((band_x,band_y),top,(255,255,255),font=band_name_font)
+    draw.text((album_x, album_y),bottom,(255,255,255),font=album_name_font)
+
+    return img
+
+wikipedia_link='https://en.wikipedia.org/wiki/Special:Random'
+page1=requests.get(wikipedia_link)
+content1= page1.content
+a = content1.find(b"<title>")
+b = content1.find(b"</title>")
+c = content1[a:b]
+d = c.strip(b"<title>") 
+e = d.strip(b"< - Wikipedia>")
+band_title = str(e,encoding = "utf-8")
+
+wikipedia_link='https://en.wikipedia.org/wiki/Special:Random'
+page2=requests.get(wikipedia_link)
+content2= page2.content
+a = content2.find(b"<title>")
+b = content2.find(b"</title>")
+c = content2[a:b]
+d = c.strip(b"<title>") 
+e = d.strip(b"< - Wikipedia>")
+album_title = str(e,encoding = "utf-8")
+
+img=display_cover(top=band_title,bottom=album_title)
+img.save('sample-out.png')
+IPythonImage(filename='sample-out.png')
